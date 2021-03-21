@@ -1,2 +1,11 @@
 #env file
 .env
+
+# virtual environment files
+venv
+
+# pycharm Setting files
+.idea
+
+# output files
+outputs

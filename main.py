@@ -13,7 +13,11 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 from src.Repository import getPerfumeIdx
+from src.Repository import getBrandIdx
+
 load_dotenv(dotenv_path='.env', verbose=True)
+
+
 # 브랜드별 향수 정보 가져오기
 def brand_perfume_crawler(dir_path, brand_name, brand_idx, site_url, site_name, header):
     keyword = brand_name.replace(' ', '-')  # 공백 하이픈(-)처리
@@ -127,8 +131,8 @@ def run(dir_path, brand_name):
     site_name = os.getenv('SITE_NAME')
     header = os.getenv('HEADER')
 
-    perfume_list = brand_perfume_crawler(path, brandName, site_url, site_name, header)
-    pd.read_csv(path + brandName + ".csv")
+    brandIdx = getBrandIdx(brand_name)
+
     perfume_list = brand_perfume_crawler(dir_path, brand_name, brandIdx, site_url, site_name, header)
     pd.read_csv(dir_path + brand_name + ".csv")
 

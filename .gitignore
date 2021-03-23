@@ -9,3 +9,6 @@ venv
 
 # output files
 outputs
+
+# cache
+src/__pycache__/

@@ -12,6 +12,7 @@ import sys
 from datetime import datetime
 from dotenv import load_dotenv
 
+from src.Repository import getPerfumeIdx
 load_dotenv(dotenv_path='.env', verbose=True)
 # 브랜드별 향수 정보 가져오기
 def brand_perfume_crawler(dir_path, brand_name, brand_idx, site_url, site_name, header):
@@ -58,6 +59,8 @@ def brand_perfume_crawler(dir_path, brand_name, brand_idx, site_url, site_name, 
             # 향수 이름
             perfume_name = main_content.select_one('div#toptop > h1').text
             print('향수 이름 : {}'.format(perfume_name))
+            perfume_idx = getPerfumeIdx(perfume_name)
+            print('향수 idx : {}'.format(perfume_idx))
 
             # 향수 이미지
             perfume_img = main_content.select_one(

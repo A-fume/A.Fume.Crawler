@@ -12,9 +12,10 @@ import sys
 from datetime import datetime
 from dotenv import load_dotenv
 
+load_dotenv(dotenv_path='.env', verbose=True)
 # 브랜드별 향수 정보 가져오기
-def brand_perfume_crawler(path, input_keyword, site_url, site_name, header):
-    keyword = input_keyword.replace(' ', '-')  # 공백 하이픈(-)처리
+def brand_perfume_crawler(dir_path, brand_name, brand_idx, site_url, site_name, header):
+    keyword = brand_name.replace(' ', '-')  # 공백 하이픈(-)처리
 
     try:
         link = (site_url + '/designers/{}.html').format(keyword)
@@ -22,7 +23,7 @@ def brand_perfume_crawler(path, input_keyword, site_url, site_name, header):
         bs = BeautifulSoup(res.text, 'html.parser')
 
         # csv 파일 생성
-        file = open(path + input_keyword + ".csv", mode="w", encoding="utf-8", newline="")
+        file = open(dir_path + brand_name + ".csv", mode="w", encoding="utf-8", newline="")
         writer = csv.writer(file)
         writer.writerow(["p.name", "i.name", "position"])
 
@@ -62,7 +63,7 @@ def brand_perfume_crawler(path, input_keyword, site_url, site_name, header):
             perfume_img = main_content.select_one(
                 'div.cell.small-12 div.grid-x.grid-margin-x.grid-margin-y div.cell.small-6.text-center div.cell.small-12 img')[
                 "src"]
-            urllib.request.urlretrieve(perfume_img, path + perfume_name + ".jpg")
+            urllib.request.urlretrieve(perfume_img, dir_path + perfume_name + ".jpg")
             print('향수 이미지 : {}'.format(perfume_img))
 
             # 향수 키워드 목록
@@ -117,15 +118,16 @@ def brand_perfume_crawler(path, input_keyword, site_url, site_name, header):
     return all_perfume_url
 
 
-def run(path, brandName):
+def run(dir_path, brand_name):
     # 환경변수 불러오기
-    load_dotenv(dotenv_path='.env', verbose=True)
     site_url = os.getenv('SITE_URL')
     site_name = os.getenv('SITE_NAME')
     header = os.getenv('HEADER')
 
     perfume_list = brand_perfume_crawler(path, brandName, site_url, site_name, header)
     pd.read_csv(path + brandName + ".csv")
+    perfume_list = brand_perfume_crawler(dir_path, brand_name, brandIdx, site_url, site_name, header)
+    pd.read_csv(dir_path + brand_name + ".csv")
 
 
 if __name__ == '__main__':

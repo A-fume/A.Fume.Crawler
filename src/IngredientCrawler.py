@@ -8,9 +8,10 @@ import os
 import csv
 from datetime import datetime
 from dotenv import load_dotenv
-from src.Repository import get_ingredient_idx
-from src.Repository import get_series_idx
-from src.Repository import set_header
+import Repository
+from Repository import get_ingredient_idx
+from Repository import get_series_idx
+from Repository import set_header
 
 
 # 재료 링크 리스트 가져오기
@@ -75,9 +76,12 @@ def ingredient_list_crawler(dir_path, site_url, query_ingredient, query_ingredie
 
 
 if __name__ == '__main__':
-    load_dotenv(dotenv_path='../.env', verbose=True)
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+    load_dotenv(dotenv_path=os.path.join(BASE_DIR, "../.env"))
     email = os.getenv('ADMIN_EMAIL')
     password = os.getenv('ADMIN_PWD')
+    site_url_ingredient = os.getenv('SITE_URL_INGREDIENT')
+    print(email, password, site_url_ingredient)
     set_header(email, password)
 
     site_url_ingredient = os.getenv('SITE_URL_INGREDIENT')

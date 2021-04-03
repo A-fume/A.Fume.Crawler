@@ -37,7 +37,7 @@ headers = {}
 def set_header(_email, _password):
     global headers
     headers = {'Content-Type': 'application/json; charset=utf-8',
-               'x-access-token': ('Bearer ' + Auth.instance().get_jwt_token(_email, _password))}
+            'x-access-token': ('Bearer ' + Auth.instance().get_jwt_token(_email, _password))}
 
 
 def get_perfume_idx(english_name):
@@ -57,8 +57,8 @@ def create_brand(english_name):
     imageUrl = ""
     url = 'http://3.35.246.117:3001/A.fume/api/0.0.1/brand'
     response = requests.post(url, headers=headers,
-                             json={"name": name, "englishName": english_name, "firstInitial": firstInitial,
-                                   "description": description, "imageUrl": imageUrl})
+                            json={"name": name, "englishName": english_name, "firstInitial": firstInitial,
+                                "description": description, "imageUrl": imageUrl})
     return response.json()['data']
 
 
@@ -77,8 +77,8 @@ def create_series(english_name):
     url = 'http://3.35.246.117:3001/A.fume/api/0.0.1/series'
     print(headers)
     response = requests.post(url, headers=headers,
-                             json={"name": name, "englishName": english_name, "description": description,
-                                   "imageUrl": image_url})
+                            json={"name": name, "englishName": english_name, "description": description,
+                                "imageUrl": image_url})
     print(response)
     return response.json()['data']
 
@@ -97,8 +97,8 @@ def create_ingredient(english_name, description, series_idx):
     url = 'http://3.35.246.117:3001/A.fume/api/0.0.1/ingredient'
     print(headers)
     response = requests.post(url, headers=headers,
-                             json={"name": name, "englishName": english_name, "description": description,
-                                   "imageUrl": image_url, "seriesIdx": series_idx})
+                            json={"name": name, "englishName": english_name, "description": description,
+                                "imageUrl": image_url, "seriesIdx": series_idx})
     print(response)
     return response.json()['data']
 
@@ -129,7 +129,7 @@ if __name__ == '__main__':
         print('success getSeriesIdx()')
     else:
         print('failed getSeriesIdx()')
-    if get_ingredient_idx('Grapefruit') == 2:
+    if get_ingredient_idx('Grapefruit','','') == 2:
         print('success getIngredientIdx()')
     else:
         print('failed getIngredientIdx()')

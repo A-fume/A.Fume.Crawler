@@ -76,12 +76,14 @@ def ingredient_list_crawler(dir_path, site_url, query_ingredient, query_ingredie
 
 
 if __name__ == '__main__':
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, "../.env"))
+    # .env 파일을 절대 경로로 불러오기. 
+    # (python 2.8부터는 상대 경로로도 가능한 것으로 보인다.)
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__)) # 현재 수행중인 코드가 담긴 파일의 디렉토리 절대 경로를 얻는다.
+    load_dotenv(dotenv_path=os.path.join(BASE_DIR, "../.env")) # .env 파일의 상대경로와 현재 디렉토리의 절대 경로를 조합해서, .env파일을 절대 경로로 불러온다.
+    
     email = os.getenv('ADMIN_EMAIL')
     password = os.getenv('ADMIN_PWD')
     site_url_ingredient = os.getenv('SITE_URL_INGREDIENT')
-    print(email, password, site_url_ingredient)
     set_header(email, password)
 
     site_url_ingredient = os.getenv('SITE_URL_INGREDIENT')

@@ -12,10 +12,9 @@ import sys
 from datetime import datetime
 from dotenv import load_dotenv
 
-from src.Repository import getPerfumeIdx
-from src.Repository import getBrandIdx
-
-load_dotenv(dotenv_path='.env', verbose=True)
+from src.Repository import get_perfume_idx
+from src.Repository import get_brand_idx
+from src.Repository import set_header
 
 
 # 브랜드별 향수 정보 가져오기
@@ -63,7 +62,7 @@ def brand_perfume_crawler(dir_path, brand_name, brand_idx, site_url, site_name, 
             # 향수 이름
             perfume_name = main_content.select_one('div#toptop > h1').text
             print('향수 이름 : {}'.format(perfume_name))
-            perfume_idx = getPerfumeIdx(perfume_name)
+            perfume_idx = get_perfume_idx(perfume_name)
             print('향수 idx : {}'.format(perfume_idx))
 
             # 향수 이미지
@@ -126,12 +125,17 @@ def brand_perfume_crawler(dir_path, brand_name, brand_idx, site_url, site_name, 
 
 
 def run(dir_path, brand_name):
+    load_dotenv(dotenv_path='.env', verbose=True)
+    email = os.getenv('ADMIN_EMAIL')
+    password = os.getenv('ADMIN_PWD')
+    set_header(email, password)
+
     # 환경변수 불러오기
     site_url = os.getenv('SITE_URL')
     site_name = os.getenv('SITE_NAME')
     header = os.getenv('HEADER')
 
-    brandIdx = getBrandIdx(brand_name)
+    brandIdx = get_brand_idx(brand_name)
 
     perfume_list = brand_perfume_crawler(dir_path, brand_name, brandIdx, site_url, site_name, header)
     pd.read_csv(dir_path + brand_name + ".csv")

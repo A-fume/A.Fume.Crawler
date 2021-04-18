@@ -12,9 +12,9 @@ import sys
 from datetime import datetime
 from dotenv import load_dotenv
 
-from src.Repository import get_perfume_idx
-from src.Repository import get_brand_idx
-from src.Repository import set_header
+from src.repository.Repository import get_perfume_idx
+from src.repository.Repository import get_brand_idx
+from src.repository.Repository import set_header
 
 
 # 브랜드별 향수 정보 가져오기

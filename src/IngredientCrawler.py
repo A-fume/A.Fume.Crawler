@@ -1,35 +1,31 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from bs4 import BeautifulSoup
-import requests
-import time
-import random
 import os
 import csv
 import json
 from datetime import datetime
 
-# 현재 수행중인 코드가 담긴 파일의 디렉토리 절대 경로를 얻는다.
-from src.Repository import set_header
+from src.repository.IngredientRepository import get_ingredient_idx
+from src.repository.SeriesRepository import get_series_idx
 from src.CommonCrawler import common_crawler
-from src.Repository import get_series_idx, get_ingredient_idx
 
+# 현재 수행중인 코드가 담긴 파일의 디렉토리 절대 경로를 얻는다.
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 # 재료 리스트 가져오기
-def ingredient_list_crawler(dir_path, headers):
+def ingredient_list_crawler(dir_path):
     with open(os.path.join(BASE_DIR, "../json/ingredient_list.json")) as json_file:
         json_ingredient_list = json.load(json_file)
 
     with open(os.path.join(BASE_DIR, "../json/ingredient.json")) as json_file:
         json_ingredient = json.load(json_file)
 
-    result_link = common_crawler(json_ingredient_list, headers)
+    result_link = common_crawler(json_ingredient_list)
 
     ingredient_list = []
     for href in map(lambda x: x["href"], result_link["link"]):
-        result = common_crawler(json_ingredient, headers, base_url=href)
+        result = common_crawler(json_ingredient, base_url=href)
 
         ingredient = {"ingredientName": result["name"][0].text, "seriesName": result["seriesName"][0].text}
         ingredient["seriesIdx"] = get_series_idx(ingredient["seriesName"])
@@ -70,15 +66,9 @@ if __name__ == '__main__':
     load_dotenv(
         dotenv_path=os.path.join(BASE_DIR, "../.env"))  # .env 파일의 상대경로와 현재 디렉토리의 절대 경로를 조합해서, .env파일을 절대 경로로 불러온다.
 
-    email = os.getenv('ADMIN_EMAIL')
-    password = os.getenv('ADMIN_PWD')
-    set_header(email, password)
-
-    header = os.getenv('HEADER')
-
     folder_name = datetime.now().strftime("%Y.%m.%d_%H.%M.%S")
     path = '../outputs/' + folder_name + '/ingredients/'
     os.makedirs(path)
     print('start test')
     print('generated file: ' + folder_name)
-    ingredient_list_crawler(dir_path=path, headers={'User-agent': header})
+    ingredient_list_crawler(dir_path=path)

@@ -1,5 +1,5 @@
 import requests
-from Auth import Auth
+from src.repository.Auth import Auth
 
 
 def create_ingredient(english_name, description, series_idx):

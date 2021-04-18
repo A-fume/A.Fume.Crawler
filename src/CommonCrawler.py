@@ -16,7 +16,6 @@ def common_crawler(config, base_url=None):
     bs = BeautifulSoup(driver.page_source, 'html.parser')
     result = {}
 
-    # Error Handling 추가
     def recursive(current_tree, current_bs, log):
 
         if current_bs is None:

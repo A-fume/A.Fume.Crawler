@@ -28,13 +28,13 @@ def ingredient_list_crawler(dir_path):
         result = common_crawler(json_ingredient, base_url=href)
 
         ingredient = {"ingredientName": result["name"][0].text, "seriesName": result["seriesName"][0].text}
-        ingredient["seriesIdx"] = get_series_idx(ingredient["seriesName"])
-        ingredient["ingredientIdx"] = get_ingredient_idx(ingredient["ingredientName"], ingredient["description"],
-                                                         ingredient["seriesIdx"])
         if len(result["description"]) > 0:
             ingredient["description"] = result["description"][0].text.replace('Odor profile: ', '')
         else:
             ingredient["description"] = ''
+        ingredient["seriesIdx"] = get_series_idx(ingredient["seriesName"])
+        ingredient["ingredientIdx"] = get_ingredient_idx(ingredient["ingredientName"], ingredient["description"],
+                                                         ingredient["seriesIdx"])
 
         ingredient_list.append(ingredient)
         print(str(ingredient))
@@ -49,7 +49,10 @@ def ingredient_list_crawler(dir_path):
         for ingredient in ingredient_list:
             row = []
             for column in columns:
-                row.append(ingredient[column] or '')
+                if column in ingredient:
+                    row.append(ingredient[column])
+                else:
+                    row.append('')
             writer.writerow(row)
         file.close()
     except AttributeError as e:

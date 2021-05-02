@@ -1,22 +1,44 @@
 from bs4 import BeautifulSoup
 
 import time
-import random
+import os
+from urllib.parse import quote
 from selenium import webdriver
 
-driver = webdriver.Chrome(executable_path='../chromedriver')
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+
+def get_html(base_url):
+    encoded_url = quote(base_url, safe='')
+    try:
+        with open(os.path.join(BASE_DIR, '../cached/' + encoded_url)) as file:
+            cached = ""
+            for line in file:
+                cached += line
+        print("♖ cached " + base_url)
+        return cached
+    except FileNotFoundError:
+        driver = webdriver.Chrome(executable_path=os.path.join(BASE_DIR, '../chromedriver'))
+        time.sleep(10)
+        driver.get(url=base_url)
+        html = driver.page_source
+
+        f = open(os.path.join(BASE_DIR, '../cached/' + encoded_url), 'w')
+        f.write(html)
+        driver.close()
+        time.sleep(5)
+        f.close()
+        return html
 
 
 def common_crawler(config, base_url=None):
     print(config["description"])
     base_url = base_url or config["base_url"]
-    print(base_url)
+
     tree = config["tree"]
 
-    time.sleep(random.randrange(1, 5))
-    driver.get(url=base_url)
-
-    bs = BeautifulSoup(driver.page_source, 'html.parser')
+    html = get_html(base_url)
+    bs = BeautifulSoup(html, 'html.parser')
     result = {}
 
     def recursive(current_tree, current_bs, log):
@@ -37,7 +59,6 @@ def common_crawler(config, base_url=None):
         data = current_bs.select(current_tree["selector"])
         print(log + ":" + key)
         result[key] = data
-        time.sleep(random.randrange(1, 5))
         return
 
     recursive(tree, bs, "/")

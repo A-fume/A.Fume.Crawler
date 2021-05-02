@@ -1,5 +1,5 @@
 import requests
-from Auth import Auth
+from src.repository.Auth import Auth
 
 
 def create_brand(english_name):
@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../../.env'), verbose=True)
-    
+
     if get_brand_idx('GALIMARD') == 3:
         print('success getBrandIdx()')
     else:

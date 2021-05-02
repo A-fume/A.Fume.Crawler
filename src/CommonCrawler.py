@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 
+import time
+import random
 from selenium import webdriver
 
 driver = webdriver.Chrome(executable_path='../chromedriver')
@@ -11,6 +13,7 @@ def common_crawler(config, base_url=None):
     print(base_url)
     tree = config["tree"]
 
+    time.sleep(random.randrange(1, 5))
     driver.get(url=base_url)
 
     bs = BeautifulSoup(driver.page_source, 'html.parser')
@@ -34,7 +37,9 @@ def common_crawler(config, base_url=None):
         data = current_bs.select(current_tree["selector"])
         print(log + ":" + key)
         result[key] = data
+        time.sleep(random.randrange(1, 5))
         return
 
     recursive(tree, bs, "/")
+
     return result

@@ -24,7 +24,7 @@ def ingredient_list_crawler(dir_path):
     result_link = common_crawler(json_ingredient_list)
 
     ingredient_list = []
-    for href in map(lambda x: x["href"], result_link["link"]):
+    for href in [x["href"] for x in result_link["link"]]:
         result = common_crawler(json_ingredient, base_url=href)
 
         ingredient = {"ingredientName": result["name"][0].text, "seriesName": result["seriesName"][0].text}

@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 
 import time
+import random
 import os
 from urllib.parse import quote
 from selenium import webdriver
@@ -19,14 +20,14 @@ def get_html(base_url):
         return cached
     except FileNotFoundError:
         driver = webdriver.Chrome(executable_path=os.path.join(BASE_DIR, '../chromedriver'))
-        time.sleep(10)
+        time.sleep(180 + (random.randrange(10, 95) * random.randrange(10, 96)) % 60)
         driver.get(url=base_url)
         html = driver.page_source
 
         f = open(os.path.join(BASE_DIR, '../cached/' + encoded_url), 'w')
         f.write(html)
-        driver.close()
         time.sleep(5)
+        driver.close()
         f.close()
         return html
 

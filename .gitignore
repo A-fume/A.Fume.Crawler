@@ -17,4 +17,4 @@ outputs
 __pycache__/
 cached
 
-chromedriver
+chromedriver.exe

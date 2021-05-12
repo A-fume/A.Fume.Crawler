@@ -6,10 +6,10 @@ import json
 import urllib
 from datetime import datetime
 import re
-import sys
 
 from src.repository.BrandRepository import get_brand_idx
 from src.CommonCrawler import common_crawler
+from src.repository.PerfumeRepository import get_perfume_idx
 
 import ssl
 
@@ -36,7 +36,7 @@ def brand_perfume_crawler(dir_path, brand_name, brand_idx):
         link = json_perfume["base_url"].format(keyword) + href
         print(link)
         result = common_crawler(json_perfume, base_url=link)
-        perfume = {"perfumeName": result["name"][0].text, "imageUrl": result["perfume_img"][0]["src"],
+        perfume = {"englishName": result["name"][0].text, "imageUrl": result["perfume_img"][0]["src"],
                    "story": re.sub(r'[\r\n]', '', result["story"][0].text)}
 
         keyword_list = [x.text for x in result["keywords"]]
@@ -47,7 +47,7 @@ def brand_perfume_crawler(dir_path, brand_name, brand_idx):
         image_path = os.path.join(dir_path, perfume["perfumeName"].replace(' ', "_"))
         if not os.path.exists(image_path):
             os.makedirs(image_path)
-        image_file = image_path + "/{}.jpg".format(perfume["perfumeName"].replace(' ', "_"))
+        image_file = image_path + "/{}.jpg".format(perfume["englishName"].replace(' ', "_"))
         print('향수 이미지 : {}'.format(perfume_img_url))
         urllib.request.urlretrieve(perfume_img_url, image_file)
 
@@ -60,21 +60,21 @@ def brand_perfume_crawler(dir_path, brand_name, brand_idx):
             top_note_list = [i.text for i in top_raw]
             position = 'TOP' if len(perfume_notes_raw) > 1 else 'SINGLE'
             for t in top_note_list:
-                note_list.append([perfume["perfumeName"], t, position])
+                note_list.append([perfume["englishName"], t, position])
             print('향수 top 노트 목록 : {}'.format(top_note_list))
 
         if len(perfume_notes_raw) > 1:
             middle_raw = perfume_notes_raw[1]
             middle_note_list = [i.text for i in middle_raw]
             for m in middle_note_list:
-                note_list.append([perfume["perfumeName"], m, 'MIDDLE'])
+                note_list.append([perfume["englishName"], m, 'MIDDLE'])
             print('향수 middle 노트 목록 : {}'.format(middle_note_list))
 
         if len(perfume_notes_raw) > 2:
             bottom_raw = perfume_notes_raw[2]
             bottom_note_list = [i.text for i in bottom_raw]
             for b in bottom_note_list:
-                note_list.append([perfume["perfumeName"], b, 'BASE'])
+                note_list.append([perfume["englishName"], b, 'BASE'])
             print('향수 bottom 노트 목록 : {}'.format(bottom_note_list))
 
         print(perfume)

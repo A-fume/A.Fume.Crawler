@@ -39,12 +39,15 @@ def brand_perfume_crawler(dir_path, brand_name, brand_idx):
         perfume = {"englishName": result["name"][0].text, "imageUrl": result["perfume_img"][0]["src"],
                    "story": re.sub(r'[\r\n]', '', result["story"][0].text)}
 
+        perfume_idx = get_perfume_idx(perfume["englishName"], brand_idx, perfume["imageUrl"], perfume["story"])
+        perfume["perfumeIdx"] = perfume_idx
+
         keyword_list = [x.text for x in result["keywords"]]
         print('향수 키워드 리스트 : {}'.format(keyword_list))
 
         # 향수 이미지
         perfume_img_url = perfume["imageUrl"]
-        image_path = os.path.join(dir_path, perfume["perfumeName"].replace(' ', "_"))
+        image_path = os.path.join(dir_path, str(perfume["perfumeIdx"]))
         if not os.path.exists(image_path):
             os.makedirs(image_path)
         image_file = image_path + "/{}.jpg".format(perfume["englishName"].replace(' ', "_"))

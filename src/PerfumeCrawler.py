@@ -6,6 +6,9 @@ import json
 import urllib
 from datetime import datetime
 import re
+import sys
+import time
+from urllib.parse import quote
 
 from src.repository.BrandRepository import get_brand_idx
 from src.CommonCrawler import common_crawler
@@ -52,7 +55,9 @@ def brand_perfume_crawler(dir_path, brand_name, brand_idx):
             os.makedirs(image_path)
         image_file = image_path + "/{}.jpg".format(perfume["englishName"].replace(' ', "_"))
         print('향수 이미지 : {}'.format(perfume_img_url))
-        urllib.request.urlretrieve(perfume_img_url, image_file)
+        if not os.path.exists(image_file):
+            urllib.request.urlretrieve(perfume_img_url, image_file)
+            time.sleep(1 + (15 * 156) % 3)
 
         note_list = []
 
@@ -88,3 +93,61 @@ def brand_perfume_crawler(dir_path, brand_name, brand_idx):
 
     print(perfume_list)
     return perfume_list
+
+
+if __name__ == '__main__':
+    from dotenv import load_dotenv
+
+    # .env 파일을 절대 경로로 불러오기.
+    # (python 2.8부터는 상대 경로로도 가능한 것으로 보인다.)
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))  # 현재 수행중인 코드가 담긴 파일의 디렉토리 절대 경로를 얻는다.
+    load_dotenv(
+        dotenv_path=os.path.join(BASE_DIR, "../.env"))  # .env 파일의 상대경로와 현재 디렉토리의 절대 경로를 조합해서, .env파일을 절대 경로로 불러온다.
+
+    input_keyword = sys.argv[1]
+    brand_name = input_keyword.replace(' ', '-')
+    # "Jo-Malone", "4160 TUESDAYS LONDON", "GALIMARD", "KENZO", "GUERLAIN PARIS", "GOUTAL PARIS", "GUCCI",
+    #                   "Cartier",
+    #                   "Cholé", "DAVIDOFF", "Dani Mackenzie", "The Different Company", "THE BODY SHOP", "the SAEM",
+    #                   "DEMETER", "Dolce & Gabbana", "DIOR", "Diptiyque Paris", "LACOSTE", "L'ARTISAN PARFUMEUR",
+    #                   "RALPH LAUREN", "LANVIN", "RANCÉ 1795", "LANCOME PARIS",
+    brand_list = ["LUSH", "LOEWE", "Lolita Lempicka",
+                  "LOUIS VUITTON", "Le Labo", "MARC JACOPS", "Mercedes-Benz", "MEMO PARIS", "Maison Margiela PARIS",
+                  "Maison Francis Kurkdjian Paris", "MONTBLANC", "MIRKO BUFFINI FIRENZE", "By Kilian", "BYREDO",
+                  "Van Cleef & Arpels", "BURBERRY", "Verawang", "VERSACE", "BOTTEGA VENETA", "BOUCHERON", "BVLGARI",
+                  "BULY 1803", "Santa Maria Novella", "CHANEL", "SERGE LUTENS", "Chopard", "SCUDERIA FERRARI",
+                  "AMOUAGE", "Abercrombie & Fitch", "ACQUA DI PARMA", "Atelier Cologne", "AFRIMO", "ANNA SUI",
+                  "ATKINSONS", "A Lab on fire", "HERMÉS PARIS", "ESTÉE LAUDER", "AERIN", "AVON", "Elizabeth Arden",
+                  "ISSEY MIYAKE", "Jean Paul Gaultier", "XERJOFF", "Jo Malone London", "GIORGIO ARMAMI",
+                  "john varvatos", "JIMMY CHOO", "JILL STUART", "Calvin Klein", "KENNETH COLE", "CREED", "CLEAN",
+                  "Kiehl's", "TOMMY HILFIGER", "TOM FORD", "paco rabanne", "PARFUMS de MARLY", "Ferragamo", "Ferrari",
+                  "PENHALIGON'S", "Forment", "Paul Smith", "POLO RALPH LAUREN", "FUEGUIA 1833", "PUIG", "Fragonard",
+                  "PRADA", "FREDERIC MALLE", "fresh", "FLORIS LONDON", "philosophy", "HUGO BOSS"]
+
+    # folder_name = datetime.now().strftime("%Y.%m.%d_%H.%M.%S")
+    folder_name = datetime.now().strftime("%Y.%m.%d")
+    for brand_name in brand_list:
+        path = '../outputs/' + folder_name + "/" + brand_name + '/perfumes/'
+        if not os.path.exists(path):
+            os.makedirs(path)
+        print('start test')
+        print('generated file: ' + folder_name)
+
+        brandIdx = get_brand_idx(brand_name)
+
+        perfume_list_result = brand_perfume_crawler(path, brand_name, brandIdx)
+        if len(perfume_list_result) == 0:
+            continue
+
+        with open(path + "{}.csv".format(brand_name), mode="w", encoding="utf-8", newline="") as file:
+            writer = csv.writer(file)
+            print(perfume_list_result[0])
+            columns = perfume_list_result[0].keys()
+            print(columns)
+            writer.writerow(columns)
+            for perfume_item in perfume_list_result:
+                row = []
+                for key in columns:
+                    row.append(perfume_item[key])
+                writer.writerow(row)
+            print("===========Generated {}.csv".format(brand_name))

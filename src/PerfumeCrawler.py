@@ -22,9 +22,9 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 def brand_perfume_crawler(dir_path, brand_name, brand_idx):
     keyword = brand_name.replace(' ', '-')  # 공백 하이픈(-)처리
 
-    with open(os.path.join(BASE_DIR, "../json/perfume_list.json")) as json_file:
+    with open(os.path.join(BASE_DIR, "../json/perfume_list.json"), encoding='UTF8') as json_file:
         json_perfume_list = json.load(json_file)
-    with open(os.path.join(BASE_DIR, "../json/perfume.json")) as json_file:
+    with open(os.path.join(BASE_DIR, "../json/perfume.json"), encoding='UTF8') as json_file:
         json_perfume = json.load(json_file)
 
     link = json_perfume_list["base_url"].format(keyword)

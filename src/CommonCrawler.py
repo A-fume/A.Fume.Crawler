@@ -12,7 +12,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 def get_html(base_url):
     encoded_url = quote(base_url, safe='')
     try:
-        with open(os.path.join(BASE_DIR, '../cached/' + encoded_url)) as file:
+        with open(os.path.join(BASE_DIR, '../cached/' + encoded_url), encoding='UTF8') as file:
             cached = ""
             for line in file:
                 cached += line

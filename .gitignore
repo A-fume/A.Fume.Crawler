@@ -1,2 +1,21 @@
 #env file
 .env
+
+#json file
+json
+
+# virtual environment files
+venv
+
+# pycharm Setting files
+.idea
+
+# output files
+outputs
+
+# cache
+__pycache__/
+cached
+
+chromedriver.exe
+chromedriver
